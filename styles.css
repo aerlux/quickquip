@@ -1,71 +1,403 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f9fafb;
+body, html {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: #333;
+    overflow-x: hidden;
+    height: 100vh;
 }
 
-.container {
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+/* Blob adjustments for responsiveness */
+.blobs .blob {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.25;
+    filter: blur(50px);
+}
+
+.blobs .blob:nth-child(1) {
+    width: 220px; height: 220px;
+    background: #FE5125;
+    top: 15%; left: 10%;
+    animation: drift 12s infinite alternate;
+}
+
+.blobs .blob:nth-child(2) {
+    width: 180px; height: 180px;
+    background: #00A1FF;
+    bottom: 25%; right: 20%;
+    animation: drift 15s infinite alternate;
+}
+
+.blobs .blob:nth-child(3) {
+    width: 200px; height: 200px;
+    background: #FF00A1;
+    top: 50%; right: 10%;
+    animation: drift 18s infinite alternate;
+}
+
+.blobs .blob:nth-child(4) {
+    width: 160px; height: 160px;
+    background: #FFD700;
+    top: 20%; left: 40%;
+    animation: drift 14s infinite alternate;
+}
+
+@keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(50px, -30px) scale(1.1); }
+}
+
+.content {
     text-align: center;
+    max-width: 700px;
     padding: 20px;
+    z-index: 1;
+    position: relative;
+    width: 90%;
 }
 
 .logo {
-    width: 100px;
-    margin-bottom: 20px;
+    width: 140px;
+    margin-bottom: -40px;
+}
+
+.brand-name {
+    font-size: 5rem;
+    color: #FE5125;
+    margin-bottom: 10px;
 }
 
 .headline {
-    font-size: 2.5rem;
-    color: #111827;
+    font-size: 2rem;
+    font-weight: normal;
+    color: #555;
     margin-bottom: 15px;
-}
-
-.headline span {
-    color: #FE5125;
+    height: 2.5rem;
 }
 
 .description {
-    color: #6b7280;
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.cta-button {
+    padding: 12px 30px;
+    background-color: #FE5125;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #e0461f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(254, 81, 37, 0.3);
+}
+
+/* Modal styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    width: 90%;
     max-width: 400px;
-    margin: 0 auto 25px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #888;
+}
+
+.close-button:hover {
+    color: #FE5125;
 }
 
 .signup-form input[type="email"] {
     width: 100%;
-    max-width: 300px;
-    padding: 10px;
-    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 6px;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    box-sizing: border-box;
 }
 
 .signup-form button {
-    width: 100%;
-    max-width: 300px;
-    padding: 10px;
-    background-color: #FE5125;
+    padding: 12px 20px;
+    background-color: rgba(254, 81, 37, 0.95);
     color: white;
     border: none;
-    border-radius: 8px;
-    font-weight: bold;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .signup-form button:hover {
-    background-color: #e6491f;
+    background-color: #e0461f;
+}
+
+.signup-form button.loading .button-text {
+    display: none;
+}
+
+.signup-form button.loading .spinner {
+    display: inline-block;
+}
+
+.spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Popup styles */
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    transform: translateY(-50%);
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    text-align: center;
+    max-width: 350px;
+    width: 90%;
+    animation: popupFadeIn 0.3s ease;
+}
+
+@keyframes popupFadeIn {
+    from { opacity: 0; transform: translateY(-60%); }
+    to { opacity: 1; transform: translateY(-50%); }
+}
+
+.popup.success h3 {
+    color: #2ecc71;
+}
+
+.popup.error h3 {
+    color: #e74c3c;
+}
+
+.popup h3 {
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.popup p {
+    margin: 0 0 20px;
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+.popup button {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: rgba(254, 81, 37, 0.95);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 10px;
+}
+
+.popup button:hover {
+    background-color: #e0461f;
+    transform: translateY(-2px);
 }
 
 footer {
-    color: #9ca3af;
-    margin-top: 20px;
-    padding-bottom: 10px;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    color: #888;
     font-size: 0.9rem;
+    padding: 0 10px;
+}
+
+.cursor {
+    display: inline-block;
+    color: #FE5125;
+    animation: blink 1s infinite;
+    font-weight: bold;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 768px) {
+    .brand-name {
+        font-size: 3.5rem;
+    }
+
+    .headline {
+        font-size: 1.5rem;
+        height: 2rem;
+    }
+
+    .description {
+        font-size: 1rem;
+    }
+
+    .logo {
+        width: 120px; /* Increased from 100px for better visibility */
+        margin-bottom: -30px;
+    }
+
+    .cta-button {
+        padding: 10px 25px;
+        font-size: 1rem;
+    }
+
+    /* Adjust blobs for smaller screens */
+    .blobs .blob {
+        filter: blur(30px);
+    }
+
+    .blobs .blob:nth-child(1) {
+        width: 150px; height: 150px;
+    }
+
+    .blobs .blob:nth-child(2) {
+        width: 120px; height: 120px;
+    }
+
+    .blobs .blob:nth-child(3) {
+        width: 140px; height: 140px;
+    }
+
+    .blobs .blob:nth-child(4) {
+        width: 100px; height: 100px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .brand-name {
+        font-size: 2.5rem;
+    }
+
+    .headline {
+        font-size: 1.2rem;
+        height: 1.8rem;
+    }
+
+    .description {
+        font-size: 0.9rem;
+    }
+
+    .logo {
+        width: 100px; /* Increased from 80px for better visibility */
+        margin-bottom: -20px;
+    }
+
+    .cta-button {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .signup-form input[type="email"] {
+        padding: 10px;
+    }
+
+    .signup-form button {
+        padding: 10px 15px;
+    }
+
+    .popup {
+        padding: 20px;
+        max-width: 300px; /* Slightly smaller for better fit */
+    }
+
+    .popup h3 {
+        font-size: 1.3rem;
+    }
+
+    .popup p {
+        font-size: 0.9rem;
+    }
+
+    .popup button {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+
+    footer {
+        font-size: 0.8rem;
+    }
 }

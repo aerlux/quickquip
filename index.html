@@ -1,36 +1,207 @@
+<link rel="stylesheet" href="styles.css">
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickQuip - Asset Tracking Simplified</title>
+    <title>QuickQuip - Asset Tracking & Alerting</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Ldf3_EqAAAAAD_LxnuE_Hir9sh1RficmLalpwG5" async defer></script>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
-
 <body>
-    <div class="container">
-        <img src="logo.svg" alt="QuickQuip Logo" class="logo">
-        <h1 class="headline">
-            Asset Tracking,<br>
-            <span>Simplified.</span>
-        </h1>
-        <p class="description">
-            Real-time alerts, predictive maintenance, and effortless asset management in one powerful system. Take control of your equipment today with QuickQuip.
-        </p>
-        <form action="#" method="post" class="signup-form">
-            <input type="email" placeholder="Enter your email" required>
-            <div class="g-recaptcha" data-sitekey="6LeKN_IqAAAAABUgJkKTfbUjtIz1CDA5aleoaFkX"></div>
-            <button class="g-recaptcha" 
-        data-sitekey="reCAPTCHA_site_key" 
-        data-callback='onSubmit' 
-        data-action='submit'>Submit</button>
-        </form>
-    </div>
-    <footer>
-        &copy; 2025 QuickQuip. All rights reserved.
-    </footer>
-</body>
+    <section class="hero">
+        <div class="blobs">
+            <div class="blob"></div>
+            <div class="blob"></div>
+            <div class="blob"></div>
+            <div class="blob"></div>
+        </div>
+        <div class="content">
+            <img src="logo.svg" alt="QuickQuip Logo" class="logo">
+            <h1 class="brand-name">QuickQuip</h1>
+            <h2 class="headline">
+                <span id="animated-text"></span>
+                <span class="cursor">|</span>
+            </h2>
+            <p class="description">
+                Be the first to experience a revolutionary approach to asset management with real-time alerts, predictive insights, and seamless integration.
+            </p>
+            <button id="open-modal" class="cta-button">Join the Waitlist</button>
+        </div>
+    </section>
 
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal" class="close-button">×</span>
+            <h2>Join the Waitlist</h2>
+            <form id="signup-form" class="signup-form">
+                <input type="email" id="email" placeholder="Enter your email" required>
+                <button type="submit">
+                    <span class="button-text">Submit</span>
+                    <span class="spinner" id="submit-spinner"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Popup -->
+    <div class="popup-overlay" id="popup-overlay"></div>
+    <div class="popup" id="feedback-popup">
+        <h3 id="popup-title"></h3>
+        <p id="popup-message"></p>
+        <button id="popup-close">OK</button>
+    </div>
+
+    <footer>
+        QuickQuip made with ❤️ in Sandnes, Norway
+    </footer>
+
+    <script>
+        const phrases = [
+                        "Effortless Real-Time Asset Tracking",
+                        "AI-Driven Predictive Maintenance",
+                        "Instant & Automated Usage Alerts",
+                        "Geo-Fencing & Theft Prevention",
+                        "Smart Rental Management",
+                        "Intelligent & Easy Data Insights",
+                        "Automated Compliance & Maintenance Logs",
+                        "Cost-Saving Optimization",
+                        "Seamless Integration with Existing Systems",
+                        "User-Friendly Dashboard & Mobile Access"
+                      ];
+        const animatedText = document.getElementById('animated-text');
+        let currentText = '';
+        let isDeleting = false;
+        let phraseIndex = 0;
+
+        function typePhrase() {
+            const currentPhrase = phrases[phraseIndex];
+            if (!isDeleting && currentText === currentPhrase) {
+                setTimeout(() => isDeleting = true, 2000);
+            } else if (isDeleting && currentText === '') {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+            }
+
+            if (isDeleting) {
+                currentText = currentPhrase.substring(0, currentText.length - 1);
+            } else {
+                currentText = currentPhrase.substring(0, currentText.length + 1);
+            }
+
+            animatedText.textContent = currentText;
+            setTimeout(typePhrase, isDeleting ? 100 : 250);
+        }
+
+        typePhrase();
+
+        // Modal functionality
+        const modal = document.getElementById('modal');
+        const openModalBtn = document.getElementById('open-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+
+        openModalBtn.onclick = () => modal.style.display = 'flex';
+        closeModalBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (event) => {
+            if (event.target == modal) modal.style.display = 'none';
+        };
+
+        // Form submission with reCAPTCHA Enterprise v3 and FormEasy (no-cors)
+        const form = document.getElementById('signup-form');
+        const url = 'https://script.google.com/macros/s/AKfycbyxpC78vwxzBgK30xfDf9tSUM8f5k7bjARYCRP8KVYIEVVi8RKLSjpj711xPkncy0qLcA/exec'; // Your Web app URL
+        const siteKey = '6Ldf3_EqAAAAAD_LxnuE_Hir9sh1RficmLalpwG5'; // Your reCAPTCHA Enterprise v3 site key
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const spinner = document.getElementById('submit-spinner');
+
+        // Popup elements
+        const popupOverlay = document.getElementById('popup-overlay');
+        const popup = document.getElementById('feedback-popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupMessage = document.getElementById('popup-message');
+        const popupClose = document.getElementById('popup-close');
+
+        // Wait for reCAPTCHA to load
+        function waitForRecaptcha(callback) {
+            if (typeof grecaptcha !== 'undefined' && grecaptcha.enterprise && grecaptcha.enterprise.ready) {
+                callback();
+            } else {
+                setTimeout(() => waitForRecaptcha(callback), 100);
+            }
+        }
+
+        // Show popup with message
+        function showPopup(title, message, type) {
+            popupTitle.textContent = title;
+            popupMessage.textContent = message;
+            popup.className = 'popup ' + type; // Add success or error class
+            popupOverlay.style.display = 'block';
+            popup.style.display = 'block';
+        }
+
+        // Hide popup
+        function hidePopup() {
+            popupOverlay.style.display = 'none';
+            popup.style.display = 'none';
+        }
+
+        popupClose.onclick = hidePopup;
+        popupOverlay.onclick = hidePopup;
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+
+            // Show loading state: add 'loading' class to button
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            waitForRecaptcha(function() {
+                grecaptcha.enterprise.ready(function() {
+                    grecaptcha.enterprise.execute(siteKey, { action: 'submit' }).then(function(token) {
+                        const data = {
+                            email: email,
+                            gCaptchaResponse: token
+                        };
+
+                        fetch(url, {
+                            method: 'POST',
+                            mode: 'no-cors', // Bypass CORS restrictions
+                            headers: {
+                                'Content-Type': 'text/plain;charset=utf-8',
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then(response => {
+                            console.log('Request sent (opaque response):', response);
+                            showPopup('Success!', 'Thank you for joining the waitlist!', 'success');
+                            form.reset();
+                            modal.style.display = 'none';
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showPopup('Error', 'There was an error submitting your request. Please try again.', 'error');
+                        })
+                        .finally(() => {
+                            // Hide spinner and re-enable button
+                            submitBtn.classList.remove('loading');
+                            submitBtn.disabled = false;
+                        });
+                    }).catch(error => {
+                        console.error('reCAPTCHA execution error:', error);
+                        showPopup('Error', 'reCAPTCHA verification failed. Please try again.', 'error');
+                        submitBtn.classList.remove('loading');
+                        submitBtn.disabled = false;
+                    });
+                });
+            });
+        }
+
+        // Add event listener after DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            form.addEventListener('submit', handleSubmit);
+        });
+    </script>
+</body>
 </html>
