@@ -1,0 +1,71 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9fafb;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+}
+
+.logo {
+    width: 100px;
+    margin-bottom: 20px;
+}
+
+.headline {
+    font-size: 2.5rem;
+    color: #111827;
+    margin-bottom: 15px;
+}
+
+.headline span {
+    color: #FE5125;
+}
+
+.description {
+    color: #6b7280;
+    max-width: 400px;
+    margin: 0 auto 25px;
+}
+
+.signup-form input[type="email"] {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.signup-form button {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    background-color: #FE5125;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.signup-form button:hover {
+    background-color: #e6491f;
+}
+
+footer {
+    color: #9ca3af;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    font-size: 0.9rem;
+}
